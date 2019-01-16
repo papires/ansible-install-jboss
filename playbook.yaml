@@ -15,7 +15,7 @@
     - name: Criar usuario JBOSS
       action: user name=jboss group=1000 state=present
 
-    - name: Instalando o jdk-8u191-linux-x64.
+    - name: Instalando o jdk-8u191-linux-x64
       yum:
          name: /tmp/jdk-8u191-linux-x64.rpm
          state: present
@@ -26,6 +26,12 @@
         dest: /home/jboss/
         remote_src: yes
 
+    - name: Modificar variavel do ambiente
+      lineinfile:
+        path: /etc/bashrc
+        line: "export JBOSS_HOME=/home/jboss/jboss-eap-7.1/" 
+        create: yes
+
     - name: Remover os arquivos temporarios 
       file:
         path: "{{ item }}"
@@ -33,3 +39,6 @@
       with_items:
         - "/tmp/jboss-eap-7.1.tgz"
         - "/tmp/jdk-8u191-linux-x64.rpm"
+
+
+
