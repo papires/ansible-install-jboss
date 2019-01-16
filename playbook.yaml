@@ -1,0 +1,35 @@
+---
+- hosts: all
+  tasks:
+    - name: Copiar JAVA e JBOSS para o host
+      copy:
+        src: "{{ item }}"
+        dest: /tmp/
+        owner: root
+        group: root
+        mode: 0644
+      with_items:
+        - jdk-8u191-linux-x64.rpm
+        - jboss-eap-7.1.tgz
+
+    - name: Criar usuario JBOSS
+      action: user name=jboss group=1000 state=present
+
+    - name: Instalando o jdk-8u191-linux-x64.
+      yum:
+         name: /tmp/jdk-8u191-linux-x64.rpm
+         state: present
+
+    - name: Instalando o jboss-eap-7.1.tgz
+      unarchive:
+        src: /tmp/jboss-eap-7.1.tgz
+        dest: /home/jboss/
+        remote_src: yes
+
+    - name: Remover os arquivos temporarios 
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - "/tmp/jboss-eap-7.1.tgz"
+        - "/tmp/jdk-8u191-linux-x64.rpm"
